@@ -26,11 +26,11 @@ app.set('views', path.join(__dirname, 'views'))
 app.engine('handlebars', exphbs({defaultLayout: 'layout'}))
 app.set('view engine', 'handlebars')
 
-app.user(bodyParser.json())
-app.user(bodyParser.urlencoded({ extended: false }))
-app.user(cookieParser())
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(cookieParser())
 
-app.user(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(session({
 	secret: 'secret',
@@ -63,9 +63,9 @@ app.use(expressValidator({
 }))
 
 
-app.user(flash())
+app.use(flash())
 
-app.user(function(req, res, next){
+app.use(function(req, res, next){
 	res.locals.success_msg = req.flash('success_msg')	
 	res.locals.errro_msg = req.flash('errro_msg')	
 	res.locals.error = req.flash('error')	
@@ -73,12 +73,12 @@ app.user(function(req, res, next){
 })
 
 app.use('/', routes)
-app.use('/users', users)
+//app.use('/users', users)
 
-spp.set('port', (proccess.env.PORT || 3000))
+app.set('port', (process.env.PORT || 3000))
 
-app.listen(aap.get('port'), fucntion(){
-	console.log('Server started on port '+ aap.get('port'))
+app.listen(app.get('port'), function(){
+	console.log('Server started on port '+ app.get('port'))
 })
 
 
