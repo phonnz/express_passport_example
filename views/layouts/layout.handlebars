@@ -47,7 +47,25 @@
 
 
 	<div class="container-fluid">
-   	
+   	{{#if success_msg}}
+            <div class="alert alert-success">{{success_msg}}</div>
+          {{/if}}
+
+          {{#if error_msg}}
+            <div class="alert alert-danger">{{error_msg}}</div>
+          {{/if}}
+
+          {{#if error}}
+            <div class="alert alert-danger">{{error}}</div>
+          {{/if}}
+          {{#if user }}
+            {{ user.email }}
+            <a href="/users/logout">Logout </a>
+            {{else}}
+            &nbsp;
+            <a href="/users/login">Login </a>
+            <a href="/users/register">Register </a>
+            {{/if}}
 
           {{{body}}}
        

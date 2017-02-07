@@ -4,15 +4,14 @@ var expressValidator				= require('express-validator')
 var exphbs							= require('express-handlebars')
 var expressMessages				= require('express-messages')
 var path							= require('path')
-var bcrypt							= require('bcrypt')
 var bodyParser						= require('body-parser')
 var cookieParser					= require('cookie-parser')
 var flash							= require('connect-flash')
 var session							= require('express-session')
 var mongoose						= require('mongoose')
 var passport						= require('passport')
-var passportHttp					= require('passport-http')
-var LocalStrategy					= require('passport-local')
+//var passportHttp					= require('passport-http')
+//var LocalStrategy					= require('passport-local')
 mongoose.connect('mongodb://localhost/loginapp_express')
 
 var routes = require('./routes/index')
@@ -65,15 +64,17 @@ app.use(expressValidator({
 
 app.use(flash())
 
+
 app.use(function(req, res, next){
 	res.locals.success_msg = req.flash('success_msg')	
 	res.locals.errro_msg = req.flash('errro_msg')	
 	res.locals.error = req.flash('error')	
+  res.locals.user = req.user || null;
 	next()	
 })
 
 app.use('/', routes)
-//app.use('/users', users)
+app.use('/users', users)
 
 app.set('port', (process.env.PORT || 3000))
 
