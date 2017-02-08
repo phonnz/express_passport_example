@@ -75,6 +75,31 @@ passport.use(new LocalStrategy(
    });
   }));
 
+passport.use(new GoogleStrategy({
+    clientID: '',
+    clientSecret: '',
+    callbackURL: "http://localhost:3000/users/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+  	
+	var mainEmail = null
+	var is_staff = false
+	var emails = profile.emails.map(function(email){
+		if(email.value.split('@')[1] === '500startups.com' || email.value.split('@')[1] === '500.co'){
+			is_staff = true
+			mainEmail = email.value
+		}
+		return email.value
+	})
+
+	if(mainEmail) emails[0] = mainEmail
+   User.findOrCreate({ googleId: profile.id, emails: emails, photo: profile.photos[0].value, is_staff : is_staff }, function (err, user) {
+   	if(err) throw err
+
+     return done(null, user);
+   });
+  }
+));
 
 
 passport.serializeUser(function(user, done){
@@ -96,7 +121,7 @@ router.post('/login',
 		failureRedirect: '/users/login',
 		failureFlash: true
 	}), function(req, res){
-		console.log('redirecting')
+		
 		res.redirect('/')
 	})
 
@@ -109,15 +134,11 @@ router.get('/logout', function(req, res){
 });
 
 router.get('/auth/google/get',
-	function(req, res, next){
-		if(!req.user){
-			return next()
-		}
-		res.redirect('http://localhost:3000/')
-	},
   passport.authenticate('google', 
   	{ scope: ['https://www.googleapis.com/auth/plus.login',
   				'https://www.googleapis.com/auth/plus.profile.emails.read'] }));
+
+
 
 router.get('/auth/google/callback', 
   passport.authenticate('google', { 

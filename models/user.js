@@ -9,9 +9,11 @@ var Schema = mongoose.Schema
 
 
 var userSchema = Schema({
+  googleId                      : { type: String },
   email                         : { type: String, required : true },
-  password                      : { type: String, required : true },
-  
+  password                      : { type: String, required : false },
+  photo                         : { type: String },
+  is_staff                      : { type: Boolean, default: false },
   created                       : { type: Date, default: Date.now },
   
 
@@ -53,11 +55,10 @@ module.exports.findOrCreate = function(user, callback){
   return this.findOne({email: user.emails[0]}, function(err, doc){
   if(err) console.log(err)
 
-  if(doc === null){      
+  if(!doc){  
       doc = new User({
       googleId: user.googleId,
       email: user.emails[0],
-      password: user.password,
       is_staff : user.is_staff,
       photo: user.photo
     })
